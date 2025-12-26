@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "Custom New Tab by NBYTE",
+  "description": "설정 후 새 탭을 열면 지정한 사이트로 이동합니다.",
+  "version": "1.0.0",
+  "chrome_url_overrides": { "newtab": "newtab.html" },
+  "options_page": "options.html",
+  "permissions": ["storage"],
+  "icons": { "128": "icon.png" }
+}
