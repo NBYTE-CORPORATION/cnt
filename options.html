@@ -5,13 +5,37 @@
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <main class="card">
+<div class="layout">
+    <div class="guide-card">
+  <div class="guide-title">입력 안내</div>
+  <div class="guide-text">
+    주소를 <strong>도메인</strong>이나 <strong>IP</strong>만 입력해도 자동으로 맞춰드려요.
+  </div>
+
+  <div class="guide-ex">
+    <div class="k">도메인 예시</div>
+    <div class="v"><code>naver.com</code> → <span>https://naver.com</span></div>
+  </div>
+
+  <div class="guide-ex">
+    <div class="k">IP 예시</div>
+    <div class="v"><code>192.168.0.1</code> → <span>http://192.168.0.1</span></div>
+  </div>
+
+  <div class="guide-note">
+    <code>http://</code> 또는 <code>https://</code>를 직접 입력하면 <strong>그대로 저장</strong>됩니다.
+  </div>
+</div>
+
+<main class="card">
         <img src="logo.png" class="logo" />
         <h2>새탭 기본URL 설정</h2>
         <input id="url" placeholder="https://example.com" />
         <button class="primary" id="save">저장</button>
     </main>
     <script src="options.js"></script>
+
+</div>
 </body>
 
 </html>

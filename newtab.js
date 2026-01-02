@@ -1,27 +1,67 @@
-chrome.storage.sync.get(["redirectUrl"], (res) => {
-  const card = document.getElementById("card");
+function normalizeUrl(input) {
+  if (!input) return "";
+  const value = input.trim();
 
-  if (!res.redirectUrl) {
-    card.innerHTML += `
-      <p class="desc">새탭을 열면 설정한 주소로 바로 이동합니다.</p>
-      <input id="url" placeholder="https://linkhub.nbyte.xyz"/>
-      <button class="primary" id="save">저장</button>
-    `;
+  // keep full URL as-is
+  if (/^https?:\/\//i.test(value)) return value;
 
-    document.getElementById("save").onclick = () => {
-      const url = document.getElementById("url").value;
-      if (!url.startsWith("http")) return alert("https:// 포함해서 입력하세요");
-      chrome.storage.sync.set({ redirectUrl: url }, () => location.reload());
-    };
-  } else {
-    const domain = res.redirectUrl.replace(/^https?:\/\//, "");
-    card.innerHTML += `
-      <p class="desc">${domain} 로 이동합니다</p>
-      <button class="ghost" id="settings" style="display:none;">설정 변경</button>
-    `;
+  // IPv4 -> http
+  const isIPv4 = /^\d{1,3}(\.\d{1,3}){3}$/.test(value);
+  if (isIPv4) return "http://" + value;
 
-    setTimeout(() => location.replace(res.redirectUrl), 100);
-    document.getElementById("settings").onclick = () =>
-      chrome.runtime.openOptionsPage();
+  // domain -> https
+  return "https://" + value;
+}
+
+function showForm() {
+  const form = document.getElementById("formWrap");
+  const status = document.getElementById("statusWrap");
+  if (form) form.style.display = "block";
+  if (status) status.style.display = "none";
+}
+
+function showStatus(text) {
+  const form = document.getElementById("formWrap");
+  const status = document.getElementById("statusWrap");
+  if (form) form.style.display = "none";
+  if (status) {
+    status.style.display = "block";
+    status.textContent = text || "이동 중…";
   }
+}
+
+function enterConfiguredMode() {
+  document.documentElement.classList.add("has-redirect");
+}
+
+function go(url) {
+  setTimeout(() => location.replace(url), 550);
+}
+
+chrome.storage.sync.get(["redirectUrl"], (res) => {
+  const input = document.getElementById("url");
+  const saveBtn = document.getElementById("save");
+
+  if (res.redirectUrl) {
+    // already configured: hide guide, center, show status, redirect
+    enterConfiguredMode();
+    showStatus("설정한 주소로 이동 중…");
+    go(res.redirectUrl);
+    return;
+  }
+
+  // first time
+  showForm();
+
+  saveBtn.addEventListener("click", () => {
+    const url = normalizeUrl(input.value);
+    if (!url) return;
+
+    chrome.storage.sync.set({ redirectUrl: url }, () => {
+      // after saving: hide guide + form, show status, redirect
+      enterConfiguredMode();
+      showStatus("저장 완료! 이동 중…");
+      go(url);
+    });
+  });
 });
