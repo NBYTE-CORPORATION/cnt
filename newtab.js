@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
       form.style.display = "none";
       status.style.display = "block";
       status.textContent = "설정한 주소로 이동 중…";
-      setTimeout(() => location.replace(res.redirectUrl), 500);
+      setTimeout(() => location.replace(res.redirectUrl), 100);
     }
   });
 
@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
       status.textContent = "저장되었습니다. 이동 중…";
 
       if (location.pathname.includes("newtab")) {
-        setTimeout(() => location.replace(url), 500);
+        setTimeout(() => location.replace(url), 100);
       }
     });
   });
